@@ -4,6 +4,8 @@
 *.pyc
 __pycache__/
 core_app/__pycache__/
+core_app/settings/__pycache__/
+settings/__pycache__/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
