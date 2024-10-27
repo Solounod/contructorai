@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',  
     'allauth.socialaccount.providers.google',
     'apps.user_auth',
+    'apps.profile_user',
     'dj_rest_auth.registration',
 ]
 
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
+    "profile_user.middleware.AnonHammerMiddleware"
 ]
 
 ROOT_URLCONF = 'core_app.urls'
