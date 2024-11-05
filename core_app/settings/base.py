@@ -4,18 +4,23 @@ from pathlib import Path
 from datetime import timedelta
 
 env = environ.Env()
+environ.Env.read_env()
+
+ENVIROMENT = env
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-environ.Env.read_env(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key')
+SECRET_KEY = env('SECRET_KEY')
+
+
 
 # Application definition
 
@@ -26,19 +31,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'dj_rest_auth',
     #django-allauth
-    'django.contrib.sites', 
+     
     'allauth',
     'allauth.account',  
     'allauth.socialaccount',  
     'allauth.socialaccount.providers.google',
-    'apps.user_auth',
-    'apps.profile_user',
     'dj_rest_auth.registration',
+    'apps.user_auth',
 ]
 
 MIDDLEWARE = [
@@ -50,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
-    "profile_user.middleware.AnonHammerMiddleware"
+    
 ]
 
 ROOT_URLCONF = 'core_app.urls'
@@ -120,6 +125,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # django-allauth settings
 
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True 
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True 
 SITE_ID = 1
 
 LOGIN_REDIRECT_URL = '/'
@@ -128,7 +135,7 @@ LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  
 ACCOUNT_EMAIL_REQUIRED = True  
 ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATIO = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 AUTHENTICATION_BACKENDS = [
     
@@ -141,8 +148,36 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
+# Google OAuth
+GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
+GOOGLE_OAUTH_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")
+GOOGLE_OAUTH_CALLBACK_URL = os.getenv("GOOGLE_OAUTH_CALLBACK_URL")
+
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': GOOGLE_OAUTH_CLIENT_ID,
+            'secret': GOOGLE_OAUTH_CLIENT_SECRET,
+            'key': ''
+        }
+    }
+}
+
+REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_AUTH_COOKIE": "auth",
+    "JWT_AUTH_REFRESH_COOKIE": "refresh",
+    "JWT_AUTH_HTTPONLY": False,  # Makes sure refresh token is sent
+}
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
@@ -155,4 +190,4 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-#AUTH_USER_MODEL = 'user_auth.CustomUser'
+AUTH_USER_MODEL = 'user_auth.ProfileUsersApp'
