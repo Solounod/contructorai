@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'dj_rest_auth.registration',
     'apps.user_auth',
+    'apps.calculate_materials',
 ]
 
 MIDDLEWARE = [

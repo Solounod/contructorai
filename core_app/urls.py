@@ -30,4 +30,5 @@ urlpatterns = [
     path('api/auth/', include('dj_rest_auth.urls')),  # dj-rest-auth endpoints
     path('api/auth/registration/', include('dj_rest_auth.registration.urls')),  # Registro dj-rest-auth
     path('api/user/', include('apps.user_auth.urls')),  # Incluye tus URLs personalizadas
+    path('api/', include('apps.calculate_materials.urls')),
 ]

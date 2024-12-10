@@ -79,11 +79,7 @@ class GoogleLogin(SocialLoginView):
     client_class = OAuth2Client
     print(callback_url)
 
-    #def post(self, request, *args, **kwargs):
-    #    print(f"Request data: {request.data}")
-#
-    #    request.data["id_token"] = request.data.get("access_token")
-    #    return super().post(request, *args, **kwargs)
+    
 
 class LoginPage(View):
     def get(self, request, *args, **kwargs):
