@@ -36,6 +36,7 @@ def date_extract(text_user):
         print(f"Error al llamar a la API de OpenAI: {e}")
         return None
 
+
 def extract_json(content):
 
     try:
@@ -50,6 +51,7 @@ def extract_json(content):
     except json.JSONDecodeError as e:
         print(f"Error al decodificar JSON: {e}")
         return None
+
     
 def calculate_promp_input(text_user_prompt):
     #text_user_prompt = input('Ingrese prompt: ')
@@ -69,7 +71,6 @@ def calculate_promp_input(text_user_prompt):
     print("\nJSON extraido: ")
     #print(json.dumps(dates_json, indent=2, ensure_ascii=False))
     print(type(dates_json))
-
 
     try:
         dimention = dates_json['dimensiones']
