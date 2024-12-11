@@ -3,6 +3,8 @@ import os
 import json
 import re
 import environ
+from .radier import calculation_radier
+from .ceramic import ceramic_floor
 
 env = environ.Env()
 environ.Env.read_env()
@@ -13,14 +15,9 @@ api_key = os.getenv('OPENAI_API_KEY')
 
 openai.api_key = api_key
 #:\n\n\"{text_user}\"
-def date_extract(text_user):
-    prompt = f"""Extrae las dimensiones y detalles del siguiente proyecto de construcción y preséntalos en formato JSON:
-    Instrucciones:
-    -Identifica las medidas y transformalas siempre a metros.
-    -Extrae los datos en largo, ancho, espesor.
-    -Si el usuario espesifica como grueso o alto o algo similar a espesor, siempre dejarlo como espesor.
-    -Identifica las distintas siglas de medidas que el usuario puede ingresar.
-    """
+def date_extract(promp_main,text_user):
+    prompt = promp_main
+    
     try:
         response = openai.chat.completions.create(model="gpt-4o-mini",
                                                   temperature=0,
@@ -52,11 +49,12 @@ def extract_json(content):
         print(f"Error al decodificar JSON: {e}")
         return None
 
-    
-def calculate_promp_input(text_user_prompt):
-    #text_user_prompt = input('Ingrese prompt: ')
 
-    date_proyect_content = date_extract(text_user_prompt)
+def calculate_promp_input(promp_main,text_user_prompt,slug):
+    #text_user_prompt = input('Ingrese prompt: ')
+    promp_ai = promp_main
+
+    date_proyect_content = date_extract(promp_ai,text_user_prompt )
 
     if not date_proyect_content:
         return {"error": "No se pudo obtener respuesta de la API"}
@@ -73,25 +71,12 @@ def calculate_promp_input(text_user_prompt):
     print(type(dates_json))
 
     try:
-        dimention = dates_json['dimensiones']
-        large = dimention['largo']
-        width = dimention['ancho']
-        thickness = dimention['espesor']
-        print()
-        print()
-        print(f"largo: {large}, ancho: {width}, espesor: {thickness}")
-        print()
-        #calculate
-        volume = large * width * thickness
-        bags_cement_m3 = 7
-        m3_sand = 0.7
-        m3_gravel = 0.7
-
-        bag_cement = volume * bags_cement_m3
-        cube_sand = volume * m3_sand
-        cube_gravel = volume * m3_gravel
-
-        return f"Necesitas aproximadamente {bag_cement:.2f} bolsas de cemento, {cube_sand:.2f} cubos de arena y {cube_gravel:.2f} cubos de grava"
+        if slug == "radier":
+            return_response = calculation_radier(dates_json)
+            return return_response
+        elif slug == "ceramica":
+            return_response = ceramic_floor(dates_json)
+            return return_response
 
     except KeyError as e:
         return f"Clave no encontrada en el JSON: {e}"
