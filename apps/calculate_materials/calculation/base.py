@@ -5,6 +5,7 @@ import re
 import environ
 from .radier import calculation_radier
 from .ceramic import ceramic_floor
+from .wall import wall
 
 env = environ.Env()
 environ.Env.read_env()
@@ -76,6 +77,9 @@ def calculate_promp_input(promp_main,text_user_prompt,slug):
             return return_response
         elif slug == "ceramica":
             return_response = ceramic_floor(dates_json)
+            return return_response
+        elif slug == "muro":
+            return_response = wall(dates_json)
             return return_response
 
     except KeyError as e:
