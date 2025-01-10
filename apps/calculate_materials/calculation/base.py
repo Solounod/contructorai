@@ -6,6 +6,7 @@ import environ
 from .radier import calculation_radier
 from .ceramic import ceramic_floor
 from .wall import wall
+from .zinc_roof import zinc_roof
 
 env = environ.Env()
 environ.Env.read_env()
@@ -80,6 +81,9 @@ def calculate_promp_input(promp_main,text_user_prompt,slug):
             return return_response
         elif slug == "muro":
             return_response = wall(dates_json)
+            return return_response
+        elif slug == "techo_zinc":
+            return_response = zinc_roof
             return return_response
 
     except KeyError as e:
